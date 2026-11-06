@@ -1,40 +1,51 @@
 # FinBot
 
-O FinBot é um projeto educacional de um assistente conversacional sobre investimentos no Brasil. Seu objetivo técnico é explorar, passo a passo, como construir uma aplicação com modelos de linguagem (LLMs), ferramentas de consulta, memória de conversação e recuperação de informações em documentos.
+Assistente educacional para aprender conceitos sobre investimentos no Brasil. Este projeto está sendo desenvolvido passo a passo como parte das aulas.
 
-## O chat que será desenvolvido
+## Etapa atual
 
-O usuário poderá conversar com o FinBot para tirar dúvidas sobre conceitos de investimentos. Ao longo do desenvolvimento, o chat será ampliado para consultar dados de mercado, manter o histórico das conversas e responder com base em documentos de referência.
+Na Aula 1, o projeto tem uma conversa inicial pelo terminal. O FinBot responde a perguntas gerais sobre investimentos e mantém o histórico durante a conversa.
 
-O sistema será composto por:
+## Requisitos
 
-- Uma interface de chat para enviar perguntas e exibir respostas.
-- Uma API para receber as mensagens e coordenar o processamento.
-- Um ou mais agentes para interpretar perguntas e decidir quando consultar ferramentas.
-- Integrações com modelos de linguagem, com possibilidade de escolher entre diferentes provedores.
-- Ferramentas para consultar indicadores econômicos e dados de ativos.
-- Memória para preservar o contexto das conversas.
-- Busca em documentos para fundamentar respostas.
-- Testes automatizados e recursos de observabilidade.
+- Python 3.12
+- Uma chave de API da Groq
 
-## Tecnologias estudadas
+## Como configurar no Windows
 
-Durante o projeto serão exploradas tecnologias como Python, LangChain, LangGraph, FastAPI, Streamlit, MongoDB, Langfuse e APIs de dados de mercado.
+Abra o projeto no VS Code e, no terminal integrado, confirme que está na pasta principal `finbot`. Execute os comandos abaixo, um de cada vez:
 
-## Organização das aulas
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+Copy-Item .env.example .env
+```
 
-As aulas apresentam a construção do projeto em etapas:
+Depois, abra o arquivo `.env` no VS Code e preencha `GROQ_API_KEY` com sua chave da Groq. Não compartilhe essa chave e não a coloque neste README.
 
-1. Ambiente de desenvolvimento, estrutura do projeto e primeiro chat.
-2. API, interface, observabilidade e publicação.
-3. Memória persistente, MongoDB e prompts versionados.
-4. Ferramentas e consulta a dados de mercado.
-5. RAG: busca e respostas baseadas em documentos.
-6. Arquitetura multiagente.
-7. Simulações, revisão de respostas, avaliações e entrega final.
+## Como executar
 
-Os materiais estão na pasta [`aulas/`](./aulas/).
+Com o ambiente virtual ativado e o `.env` configurado, rode no terminal integrado:
 
-## Uso responsável
+```powershell
+python -m scripts.chat_terminal
+```
 
-O FinBot tem finalidade educacional. Suas respostas não constituem recomendação de compra ou venda de ativos, nem substituem a avaliação de um profissional qualificado. Dados e regras podem mudar; consulte fontes oficiais antes de tomar decisões financeiras.
+Digite `sair` para encerrar a conversa.
+
+## Como executar os testes
+
+Com o ambiente virtual ativado, rode:
+
+```powershell
+pytest -v
+```
+
+## Segurança
+
+O arquivo `.env` contém chaves privadas e não deve ser enviado ao GitHub. O arquivo `.env.example` contém apenas o modelo das configurações e pode ser publicado.
+
+## Próximas etapas
+
+Este projeto será ampliado nas aulas seguintes. O link do aplicativo publicado será acrescentado aqui quando ele estiver disponível.

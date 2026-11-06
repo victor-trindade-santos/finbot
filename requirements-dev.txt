@@ -1,0 +1,3 @@
+# Só para desenvolver e testar no computador (não vai para o Render)
+-r requirements.txt
+pytest>=8.0
