@@ -13,7 +13,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 MODELOS_PADRAO = {
     "groq": "openai/gpt-oss-120b",  # llama-3.3-70b-versatile foi desligado em 16/08/2026
-    "gemini": "gemini-2.5-flash",
+    "gemini": "gemini-3.8-flash",
     "mistral": "mistral-small-latest",
 }
 
@@ -27,10 +27,38 @@ class Settings(BaseSettings):
     groq_api_key: SecretStr | None = None
     gemini_api_key: SecretStr | None = None
     mistral_api_key: SecretStr | None = None
+    
+    # Langfuse (observabilidade e prompts)
+    # Chave pública: identifica o projeto no Langfuse (pode ser texto comum).
+    langfuse_public_key: str | None = None
+    # Chave secreta: SecretStr esconde o valor em print() e em mensagens de erro.
+    langfuse_secret_key: SecretStr | None = None
+    # Servidor do Langfuse (projeto criado nos EUA usa https://us.cloud.langfuse.com).
+    langfuse_host: str = "https://cloud.langfuse.com"
+
+    # Endereço da API, usado pelo front em Streamlit.
+    # No computador é a API local; na nuvem, aponta para a API publicada no Render.
+    api_url: str = "http://127.0.0.1:8000"
 
     @property
     def modelo(self) -> str:
         return self.llm_modelo or MODELOS_PADRAO[self.llm_provedor]
+    
+    # @property permite usar o método como se fosse um campo: settings.langfuse_ativo
+    @property
+    def langfuse_ativo(self) -> bool:
+        """Diz se o Langfuse está configurado: só liga com as DUAS chaves preenchidas."""
+        # get_secret_value() revela o texto guardado no SecretStr; sem chave, usa "" (vazio).
+        segredo = self.langfuse_secret_key.get_secret_value() if self.langfuse_secret_key else ""
+        # bool(...) dá True só se a chave pública E a secreta tiverem conteúdo.
+        return bool(self.langfuse_public_key and segredo)    # @property permite usar o método como se fosse um campo: settings.langfuse_ativo
+    @property
+    def langfuse_ativo(self) -> bool:
+        """Diz se o Langfuse está configurado: só liga com as DUAS chaves preenchidas."""
+        # get_secret_value() revela o texto guardado no SecretStr; sem chave, usa "" (vazio).
+        segredo = self.langfuse_secret_key.get_secret_value() if self.langfuse_secret_key else ""
+        # bool(...) dá True só se a chave pública E a secreta tiverem conteúdo.
+        return bool(self.langfuse_public_key and segredo)
 
 
 settings = Settings()

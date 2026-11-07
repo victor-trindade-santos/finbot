@@ -1,0 +1,3 @@
+# Dependências SÓ do front (o Streamlit Cloud usa este arquivo, que fica ao lado do app)
+streamlit>=1.40
+requests>=2.32
