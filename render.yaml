@@ -1,0 +1,26 @@
+# Blueprint do Render: New + > Blueprint > escolha este repositório.
+# As chaves (sync: false) são pedidas na tela do Render, nunca ficam no GitHub.
+services:
+  - type: web                   # serviço web: fica no ar respondendo pedidos HTTP
+    name: finbot-api            # nome no painel (vira parte da URL)
+    runtime: python
+    plan: free                  # plano gratuito: "dorme" depois de um tempo sem uso
+    buildCommand: pip install -r requirements.txt                    # instala as dependências
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT   # liga a API
+    healthCheckPath: /saude     # o Render chama esta rota para saber se a API subiu
+    autoDeploy: true            # cada git push na main publica de novo
+    envVars:                    # variáveis de ambiente (o .env do servidor)
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: LLM_PROVEDOR
+        value: groq
+      - key: GROQ_API_KEY
+        sync: false             # secreta: você digita o valor no painel do Render
+      - key: LANGFUSE_PUBLIC_KEY
+        sync: false
+      - key: LANGFUSE_SECRET_KEY
+        sync: false
+      - key: LANGFUSE_TRACING_ENVIRONMENT
+        value: producao         # separa os traces do Render dos locais (filtro Environment)
+      - key: LANGFUSE_HOST
+        value: https://cloud.langfuse.com
