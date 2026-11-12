@@ -55,3 +55,11 @@ def rastrear(sessao: str, usuario: str, nome: str = "chat"):
     # propagate_attributes "carimba" sessão, usuário e nome em todo trace criado dentro do bloco.
     with propagate_attributes(session_id=sessao, user_id=usuario, trace_name=nome):
         yield  # neste ponto roda o código que está dentro do "with rastrear(...)"
+        
+def config_prompt(prompt) -> dict:
+    """Liga a chamada do LLM à versão do prompt usada (aparece no trace e nas métricas do prompt)."""
+    # Prompt local (fallback) não existe no Langfuse: não há versão para ligar.
+    if getattr(prompt, "is_fallback", True):
+        return {}
+    # O CallbackHandler lê "langfuse_prompt" nos metadados e liga o trace à versão do prompt.
+    return {"metadata": {"langfuse_prompt": prompt}}        

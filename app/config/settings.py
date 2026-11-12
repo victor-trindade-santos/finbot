@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     # Endereço da API, usado pelo front em Streamlit.
     # No computador é a API local; na nuvem, aponta para a API publicada no Render.
     api_url: str = "http://127.0.0.1:8000"
+    # MongoDB
+    # Estes são só valores PADRÃO: o valor real vem do .env (MONGO_URL e MONGO_BANCO)
+    # no seu computador, e das variáveis de ambiente no Render. Se existir no .env, ele vale.
+    # NUNCA coloque aqui a URL do Atlas: ela tem a senha do banco e este arquivo vai para o GitHub.
+    mongo_url: str = "mongodb://localhost:27017"
+    mongo_banco: str = "finbot"  # nome do banco de dados dentro do servidor
 
     @property
     def modelo(self) -> str:

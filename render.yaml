@@ -24,3 +24,5 @@ services:
         value: producao         # separa os traces do Render dos locais (filtro Environment)
       - key: LANGFUSE_HOST
         value: https://cloud.langfuse.com
+      - key: MONGO_URL
+        sync: false

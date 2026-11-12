@@ -1,22 +1,25 @@
 # app/agents/chatbot.py
 """Agente de conversa geral: LLM + prompt de sistema (sem ferramentas).
+
+Aula 3: vira um NÓ de grafo. Um nó recebe o estado e devolve só o que mudou.
 """
-# Tipos de mensagem do LangChain (os "papéis" da Aula 1):
-# SystemMessage = regras do bot, HumanMessage = usuário, AIMessage = resposta do modelo.
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 
-from app.llm import fabrica        # cria o modelo do provedor escolhido no .env
-from app.prompts import catalogo   # carrega o prompt de sistema (app/prompts/sistema.md)
+from app.llm import fabrica
+from app.llm.observabilidade import config_prompt
+from app.prompts import catalogo
+from app.utils.mensagens import conversa_limpa
 
 
-def responder(historico: list[BaseMessage], pergunta: str, callbacks: list | None = None) -> AIMessage:
-    """Monta [sistema + histórico + pergunta] e chama o modelo."""
-    # O LLM não tem memória: a cada pergunta enviamos regras + conversa anterior + pergunta nova.
-    mensagens = (
-        [SystemMessage(catalogo.carregar("sistema"))]
-        + historico[-10:]  # janela de contexto: só as 10 últimas (economiza tokens)
-        + [HumanMessage(pergunta)]
+# Nó do grafo: recebe o estado atual (mensagens e perfil) e devolve só o que mudou.
+def no_chatbot(estado: dict) -> dict:
+    # Busca o prompt de sistema (no Langfuse ou no .md) e preenche {{perfil}}.
+    prompt = catalogo.obter("sistema")
+    sistema = SystemMessage(prompt.compile(perfil=estado.get("perfil", "não informado")))
+    # Envia regras + conversa (sem passos internos) ao LLM; config liga o trace ao prompt.
+    resposta = fabrica.criar_modelo().invoke(
+        [sistema] + conversa_limpa(estado["messages"]),
+        config=config_prompt(prompt),
     )
-    # invoke() envia as mensagens ao LLM e devolve um AIMessage.
-    # Os callbacks (Langfuse) vão em config; "or []" troca None por lista vazia.
-    return fabrica.criar_modelo().invoke(mensagens, config={"callbacks": callbacks or []})
+    # A nova mensagem do assistente; name="conversa" marca qual agente respondeu.
+    return {"messages": [AIMessage(content=resposta.content, name="conversa")]}

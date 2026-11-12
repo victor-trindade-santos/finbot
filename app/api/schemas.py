@@ -20,9 +20,17 @@ class Pergunta(BaseModel):
 class Resposta(BaseModel):
     """O que a API DEVOLVE em POST /chat."""
     resposta: str
+    agente: str = "conversa"  # qual agente respondeu
+    fontes: list[str] = []  # de onde vieram os dados da resposta (a partir da Aula 4)
 
 
 class Mensagem(BaseModel):
     """Uma mensagem do histórico, devolvida em GET /sessoes/{sessao}/mensagens."""
     papel: str      # "user" (pessoa) ou "assistant" (FinBot)
     conteudo: str   # o texto da mensagem
+    agente: str | None = None  # qual agente escreveu a mensagem
+
+class Perfil(BaseModel):
+    nome: str = ""
+    objetivo: str = ""        # ex.: "reserva de emergência", "aposentadoria"
+    experiencia: str = ""     # ex.: "iniciante"
