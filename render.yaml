@@ -26,3 +26,6 @@ services:
         value: https://cloud.langfuse.com
       - key: MONGO_URL
         sync: false
+      # Token da brapi.dev (opcional; libera mais ativos).
+      - key: BRAPI_TOKEN
+        sync: false
