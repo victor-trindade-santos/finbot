@@ -13,3 +13,5 @@ langfuse>=4.0        # registra cada conversa (traces) no painel do Langfuse
 langgraph>=1.0  # grafos de agentes (nós, arestas, estado) e memória por sessão
 langgraph-checkpoint-mongodb>=0.3  # salva a memória do grafo no MongoDB
 pymongo>=4.10  # conecta o Python ao MongoDB
+# Aula 4 — ferramentas que chamam APIs
+requests>=2.32  # faz pedidos HTTP às APIs de dados de mercado
